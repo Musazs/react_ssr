@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useState } from 'react'
 import {Route } from 'react-router-dom'
 import Index from './container/index'
 import About from './container/about'
-
+import User from './container/user'
 // export default (
 //     <div>
 //         <Route path="/" exact component={Index}></Route>
@@ -10,18 +10,25 @@ import About from './container/about'
 //     </div>
 // ) 
 
-// 改造 成配置  
+// 改造 js 成配置  
 export default [
     {
         path: '/',
         component: Index,
-        exact: true,
-        key: 'index'
+        // exact: true, // 精确匹配
+        key: 'index',
+        // loadData: Index.loadData
     },
     {
         path: '/about',
         component: About,
         exact: true,
         key: 'about'
+    },
+    {
+        path: '/user',
+        component: User,
+        exact: true,
+        key: 'user'
     }
 ]
