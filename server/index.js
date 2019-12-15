@@ -1,17 +1,30 @@
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import express from "express"
+import {StaticRouter} from 'react-router-dom'
 import App from '../src/app.js'
+import { format } from 'path'
+import {Provider} from 'react-redux'
+import store from '../src/store/store'
 
-const app = express()
+const app = express() 
 
 //  家在使用静态资源
 app.use(express.static('public'))
 
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
+    //  判断 获取根据路由 渲染的嘴贱，并且拿到 loadData  方法
     // const Page = <App title="开本吧"></App>
     // 将react 组建 解析为 html 
-    const content = renderToString(App)
+    const content = renderToString(
+        // react 服务端渲染 用 StaticRouter   客户端渲染使用 BrowRouter 不准确，大概是这个意思
+        <Provider store={store}>
+            <StaticRouter location={req.url}>
+                {App}
+            </StaticRouter>
+        </Provider>
+        
+    )
     res.end(`
         <html>
             <head>
