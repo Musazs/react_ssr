@@ -2,12 +2,8 @@ import React from 'react'
 
 function About (props) {
     return (<div>
-        <h1>关于我呢</h1>
+        <h1>关于我呢，登录</h1>
     </div>)
-}
-
-About.loadData = (store) => {
-    return ''
 }
 
 export default About

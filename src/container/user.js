@@ -1,12 +1,15 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { getUserInfo } from '../store/user'
+import { Redirect }  from 'react-router-dom'
 
 function User (props) {
-    console.log(props)
-    return <div>
-        <h1>{props.userinfo.name}, 你们最棒的人是{props.userinfo.base}</h1>
-    </div>
+    // return <div>
+    //     <h1>{props.userinfo.name}, 你们最棒的人是{props.userinfo.base}</h1>
+    // </div>
+
+    // 判断没登陆逻辑， 跳转到登录页
+    return <Redirect to="/about"></Redirect>
 }
 
 User.loadData = (store) => {
@@ -15,7 +18,6 @@ User.loadData = (store) => {
 
 export default connect(
     state => {
-        console.log('=======', state)
         return { userinfo: state.user.userinfo }
     },
     // {getIndexList}

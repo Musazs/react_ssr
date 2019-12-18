@@ -1,0 +1,9 @@
+body {
+    color: yellowgreen;
+}
+
+#img_404 {
+    width: auto;
+    display: block;
+    margin: 40px auto;
+}

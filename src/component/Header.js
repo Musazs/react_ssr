@@ -8,5 +8,7 @@ export default ( ()=> {
         <Link to="about">关于</Link>
         ---
         <Link to="user">user</Link>
+        ------
+        <Link to="/asdgssfg">这个页面可能不存在呀</Link>
     </div>
 })
