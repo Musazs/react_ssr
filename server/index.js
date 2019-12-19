@@ -29,79 +29,62 @@ app.use(
 )
 
 app.get('*', (req, res) => {
-    // 解决请求方法一
-    // if (req.url.startsWidth('/api/')) {
-    //     // 不渲染页面， 做转发请求处理
-    // }
-
-
-    // 存储网络亲求 
-    const promises = [];
+    // 获取 根据路由渲染出的组建，并且拿到 loadData 方法，获取数据
+    // 存储所有网络请求
+    const promises = []
+    console.log(routes)
     routes.some(route => {
-        const match = matchPath(req.path, route);
-        if (match) {
-            const { loadData } = route.component
-            if (loadData) {
-                // 老师的解决 接口报错方法一
-                const promise = new Promise((resolve, reject) => {
-                    // 强制规避报错， 可以考虑在catch 加报错
-                    loadData(store).then(resolve).catch(resolve)
-                })
-                promises.push(promise)
-                // promises.push(loadData(store))
-            }
+      const match = matchPath(req.path, route)
+      if (match) {
+        const { loadData } = route.component
+        if (loadData) {
+          promises.push(loadData(store))
         }
+      }
     })
-    
-    //   等待所有网络请求
+    // 等待所有网络请求结束再渲染
     Promise.all(promises).then(() => {
-        const context = {}
-        //  判断 获取根据路由 渲染的嘴贱，并且拿到 loadData  方法
-        // const Page = <App title="开本吧"></App>
-        // 将react 组建 解析为 html 
-        const content = renderToString(
-            // react 服务端渲染 用 StaticRouter   客户端渲染使用 BrowRouter 不准确，大概是这个意思
-            <Provider store={store}>
-                <StaticRouter location={req.url} context={context}>
-                    <Header></Header>
-                    <Switch>
-                        {routes.map(route => <Route {...route}></Route>)}
-                    </Switch>
-                   
-                </StaticRouter>
-            </Provider>
-        )
-        console.log('context===================================================', context)
-        // 获取不到
-        if(context.statuscode) {
-            // 根据状态切换 和页面跳转
-            res.status(context.statuscode)
-        }
-
-        if (context.aciton == 'REPLACE') {
-            res.redirect(500, context.url);
-        }
-        res.end(`
-            <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
-                    <title>resct ssr</title>
-                </head>
-                <body>
-                    <div id="root">${content}</div>
-                    <script>
-                        window.__context = ${JSON.stringify(store.getState())}
-                    </script>
-                    <script src="/bundle.js"></script>
-                </body>
-            </html>
-        `)
-    }).catch(() => {
-        res.send('404')
+      const context = {}
+      // 把react组件，解析成html
+      const content = renderToString(
+        <Provider store={store}>
+          <StaticRouter location={req.url} context={context}>
+            <Header></Header>
+            <Switch>
+              {routes.map(route => {
+                return <Route {...route}></Route>
+              })}
+            </Switch>
+          </StaticRouter>
+        </Provider>
+      )
+      if (context.statuscode) {
+        // 状态切换和页面跳转
+        res.status(context.statuscode)
+      }
+      if (context.action === "REPLACE") {
+        res.redirect(301, context.url)
+      }
+      res.send(`
+      <html>
+        <head>
+          <meta charset='utf-8'/>
+          <title>react ssr</title>
+        </head>
+        <body>
+          <div id='root'>${content}</div>
+          <script>
+            window.__context=${JSON.stringify(store.getState())}
+          </script>
+          <script src='/bundle.js'></script>
+        </body>
+      </html>`)
+    }).catch((err) => {
+      res.send('报错页面: 500')
     })
-    
-})
+  
+  
+  })
 
 app.listen(9527, () => {
     console.log('监听9527已启动')
