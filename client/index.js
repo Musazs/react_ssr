@@ -14,11 +14,19 @@ const Page = (<Provider store={getClientStore()}>
     <BrowserRouter>
         <Header></Header>
         <Switch>
-            {routes.map(route => <Route {...route}></Route>)}
+            {routes.map(route => <Route key={route.key} {...route}></Route>)}
         </Switch>
         
     </BrowserRouter>
 </Provider>)
 
+if (window.__context) {
+    // ssr
+    ReactDom.hydrate(Page, document.getElementById('root'))
+} else {
+    // csr
+    ReactDom.render(Page, document.getElementById('root'))
+}
 
-ReactDom.hydrate(Page, document.getElementById('root'))
+
+

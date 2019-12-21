@@ -4,7 +4,7 @@ import Index from './container/index'
 import About from './container/about'
 import User from './container/user'
 import NotFound from './container/notFound'
-import './app.css'
+// import './app.css'
 // export default (
 //     <div>
 //         <Route path="/" exact component={Index}></Route>
@@ -34,6 +34,7 @@ export default [
         key: 'user'
     },
     {
-        component: NotFound
+        component: NotFound,
+        key: 'notfound'
     }
 ]
